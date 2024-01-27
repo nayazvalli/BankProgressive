@@ -2,14 +2,10 @@ package com.wecp.progressive.dao;
 
 import com.wecp.progressive.dto.CustomerAccountInfo;
 import com.wecp.progressive.entity.Customers;
-
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class CustomerDAOImpl implements CustomerDAO {
-
-
     @Override
     public List<Customers> getAllCustomers() {
         List<Customers> customers = new ArrayList<>();

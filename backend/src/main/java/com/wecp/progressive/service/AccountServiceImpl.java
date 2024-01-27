@@ -1,17 +1,16 @@
 package com.wecp.progressive.service;
 
-
-
 import com.wecp.progressive.dao.AccountDAO;
 import com.wecp.progressive.entity.Accounts;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class AccountServiceImpl implements AccountService {
 
-    private static List<Accounts> accountsList = new ArrayList<>();
+    private static List<Accounts> listOfAccount = new ArrayList<>();
     private AccountDAO accountDAO;
 
     public AccountServiceImpl(AccountDAO accountDAO) {
@@ -54,21 +53,24 @@ public class AccountServiceImpl implements AccountService {
     }
     @Override
     public List<Accounts> getAllAccountsSortedByBalanceFromArrayList() {
-        return null;
+        List<Accounts> sortedAccounts = listOfAccount;
+         // Sort by account balance
+         Collections.sort(sortedAccounts);
+        return sortedAccounts;
     }
 
     @Override
     public void emptyArrayList() {
-        
+        listOfAccount = new ArrayList<>();
     }
 
     @Override
     public List<Accounts> getAllAccountsFromArrayList() {
-        return null;
+        return listOfAccount;
     }
-    
     @Override
     public List<Accounts> addAccountToArrayList(Accounts accounts) {
-        return null;
+        listOfAccount.add(accounts);
+        return listOfAccount;
     }
 }

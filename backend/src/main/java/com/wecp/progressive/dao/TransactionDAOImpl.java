@@ -1,8 +1,6 @@
 package com.wecp.progressive.dao;
 
-
 import com.wecp.progressive.entity.Transactions;
-
 import java.util.ArrayList;
 import java.util.List;
 
