@@ -2,6 +2,7 @@ package com.wecp.progressive.service;
 
 
 import com.wecp.progressive.entity.Accounts;
+import com.wecp.progressive.exception.AccountNotFoundException;
 import com.wecp.progressive.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.sql.SQLException;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AccountServiceImplJpa implements AccountService{
@@ -31,7 +33,13 @@ public class AccountServiceImplJpa implements AccountService{
 
     @Override
     public Accounts getAccountById(int accountId) {
-        return accountRepository.findById(accountId).orElse(null);
+        Optional<Accounts> accounts = accountRepository.findById(accountId);
+        if (accounts.isPresent()) {
+            return accounts.get();
+        }
+        else {
+            throw new AccountNotFoundException("No accounts found linked with this accountId");
+        }
     }
 
     @Override
