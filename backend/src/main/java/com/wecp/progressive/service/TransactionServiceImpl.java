@@ -47,7 +47,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public List<Transactions> getTransactionsByCustomerId(int customerId) throws SQLException {
-       
+        // TODO Auto-generated method stub
         return null;
     }
 }

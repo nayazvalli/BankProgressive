@@ -4,14 +4,10 @@ import com.wecp.progressive.entity.Accounts;
 import com.wecp.progressive.service.AccountService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -21,35 +17,74 @@ import java.util.List;
 @RequestMapping("/accounts")
 public class AccountController {
 
+    private final AccountService accountService;
+
     @Autowired
-    AccountService accountService;
+    public AccountController(@Qualifier("accountServiceImplJpa") AccountService accountService) {
+        this.accountService = accountService;
+    }
 
     @GetMapping
-    public ResponseEntity<List<Accounts>> getAllAccounts()throws SQLException {
-        return new ResponseEntity<List<Accounts>>(accountService.getAllAccounts(),HttpStatus.OK);
-    }
-    @GetMapping("/{accountId}")
-    public ResponseEntity<Accounts> getAccountById(int accountId)throws SQLException {
-        return new ResponseEntity<Accounts>(accountService.getAccountById(accountId),HttpStatus.OK);
+    public ResponseEntity<List<Accounts>> getAllAccounts() {
+        try {
+            List<Accounts> accounts = accountService.getAllAccounts();
+            return new ResponseEntity<>(accounts, HttpStatus.OK);
+        } catch (SQLException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    public ResponseEntity<List<Accounts>> getAccountsByUser(String param) {
-        return new ResponseEntity<>(HttpStatus.OK);
-        //return new ResponseEntity<List<Accounts>>(accountService.getAccountsByUser(),HttpStatus.OK);
+    @GetMapping("/{accountId}")
+    public ResponseEntity<Accounts> getAccountById(@PathVariable int accountId) {
+        try {
+            Accounts accounts = accountService.getAccountById(accountId);
+            if (accounts != null) {
+                return new ResponseEntity<>(accounts, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch (SQLException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Accounts>> getAccountsByUser(@PathVariable String userId) {
+        try {
+            List<Accounts> accounts = accountService.getAccountsByUser(Integer.parseInt(userId));
+            return new ResponseEntity<>(accounts, HttpStatus.OK);
+        } catch (SQLException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PostMapping
-    public ResponseEntity<Integer> addAccount(Accounts accounts)throws SQLException {
-        return new ResponseEntity<Integer>(accountService.addAccount(accounts),HttpStatus.CREATED);
+    public ResponseEntity<Integer> addAccount(@RequestBody Accounts accounts) {
+        try {
+            int accountId = accountService.addAccount(accounts);
+            return new ResponseEntity<>(accountId, HttpStatus.CREATED);
+        } catch (SQLException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
     @PutMapping("/{accountId}")
-    public ResponseEntity<Void> updateAccount(int accountId, Accounts accounts)throws SQLException{
-        accounts.setAccountId(accountId);
-        accountService.updateAccount(accounts);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<Void> updateAccount(@PathVariable int accountId, @RequestBody Accounts accounts) {
+        try {
+            accounts.setAccountId(accountId);
+            accountService.updateAccount(accounts);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (SQLException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
     @DeleteMapping("/{accountId}")
-    public ResponseEntity<Void> deleteAccount(int accountId)throws SQLException {
-        accountService.deleteAccount(accountId);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<Void> deleteAccount(@PathVariable int accountId) {
+        try {
+            accountService.deleteAccount(accountId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (SQLException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

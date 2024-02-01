@@ -1,13 +1,13 @@
 package com.wecp.progressive.repository;
 
-import java.util.List;
-
+import com.wecp.progressive.entity.Transactions;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.wecp.progressive.entity.Transactions;
-@Repository
-public interface TransactionRepository extends JpaRepository<Transactions,Integer> {
+import java.util.List;
 
-    //List<Transactions> findByCustomerId(int customerId);
+@Repository
+public interface TransactionRepository extends JpaRepository<Transactions, Integer> {
+
+    List<Transactions> findByAccountsAccountId(int accountId);
 }
