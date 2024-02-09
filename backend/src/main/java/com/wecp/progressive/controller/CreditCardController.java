@@ -22,7 +22,7 @@ public class CreditCardController {
         List<CreditCard> creditCards = creditCardService.getAllCreditCards();
         return new ResponseEntity<>(creditCards, HttpStatus.OK);
     }
-
+//test for day 13
     @GetMapping("/{id}")
     public ResponseEntity<CreditCard> getCreditCardById(@PathVariable Long id) {
         CreditCard creditCard = creditCardService.getCreditCardById(id);
